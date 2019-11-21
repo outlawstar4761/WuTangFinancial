@@ -65,17 +65,18 @@ class AutoCategorizer{
     self::DEXRESERVE
   );
 
+  protected $_transactions = array();
+
   public function __construct(){
     $this->_getTransactions()->_categorize();
   }
   protected function _getTransactions(){
-    $transactions = Record::search(Transaction::DB,Transaction::TABLE,Transaction::PRIMARYKEY,'category',null);
-    print_r($transactions);
+    $this->_transactions = Transaction::getUncategorized();
     return $this;
   }
   protected function _categorize(){
     foreach($this->_transactions as $transaction){
-      //todo categorize
+      print_r($transaction);
     }
     return $this;
   }
