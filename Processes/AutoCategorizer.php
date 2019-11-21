@@ -85,27 +85,27 @@ class AutoCategorizer{
     $storage = 0;
     $car = 0;
     foreach($this->_transactions as $transaction){
-      foreach($this->knownDining as $diningPattern){
+      foreach(self::$knownDining as $diningPattern){
         if($this->_isMatch($diningPattern,$transaction->memo)){
           $dinning++;
         }
       }
-      foreach($this->knownAlcohol as $alcoholPattern){
+      foreach(self::$knownAlcohol as $alcoholPattern){
         if($this->_isMatch($alcoholPattern,$transaction->memo)){
           $alcohol++;
         }
       }
-      foreach($this->knownPhones as $phonePattern){
+      foreach(self::$knownPhones as $phonePattern){
         if($this->_isMatch($phonePattern,$transaction->memo)){
           $phone++;
         }
       }
-      foreach($this->knownUtilities as $utilityPattern){
+      foreach(self::$knownUtilities as $utilityPattern){
         if($this->_isMatch($phonePattern,$transaction->memo)){
           $utility++;
         }
       }
-      foreach($this->knownRents as $rentPattern){
+      foreach(self::$knownRents as $rentPattern){
         if($this->_isMatch($rentPattern,$transaction->memo)){
           $rent++;
         }
