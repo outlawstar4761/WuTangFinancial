@@ -84,10 +84,11 @@ class AutoCategorizer{
     $rent = 0;
     $storage = 0;
     $car = 0;
+    $dining = 0;
     foreach($this->_transactions as $transaction){
       foreach(self::$knownDining as $diningPattern){
         if($this->_isMatch($diningPattern,$transaction->memo)){
-          $dinning++;
+          $dining++;
         }
       }
       foreach(self::$knownAlcohol as $alcoholPattern){
