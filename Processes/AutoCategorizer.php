@@ -127,7 +127,7 @@ class AutoCategorizer{
         $car++;
       }
     }
-    echo count($this->transactions) . "\n";
+    echo count($this->_transactions) . "\n";
     echo "Alcohol: " . $alcohol . "\n";
     echo "Dining: " . $dining . "\n";
     echo "Utility: " . $utility . "\n";
