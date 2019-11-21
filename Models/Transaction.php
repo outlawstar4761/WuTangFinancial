@@ -23,13 +23,12 @@ class Transaction extends Record{
     parent::__construct(self::DB,self::TABLE,self::PRIMARYKEY,$id);
   }
   public static function getUncategorized(){
-    $ids = array();
     $data = array();
     $results = $GLOBALS['db']
       ->database(self::DB)
       ->table(self::TABLE)
       ->select(self::PRIMARYKEY)
-      ->where("category","is",null)
+      ->where("category","is","null")
       ->get();
     while($row = mysqli_fetch_assoc($results)){
       $data[] = new self($row[self::PRIMARYKEY]);

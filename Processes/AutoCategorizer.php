@@ -75,10 +75,77 @@ class AutoCategorizer{
     return $this;
   }
   protected function _categorize(){
+    $alcohol = 0;
+    $utility = 0;
+    $internet = 0;
+    $phone = 0;
+    $insurance = 0;
+    $va = 0;
+    $rent = 0;
+    $storage = 0;
+    $car = 0;
     foreach($this->_transactions as $transaction){
-      print_r($transaction);
+      foreach($this->knownDining as $diningPattern){
+        if($this->_isMatch($diningPattern,$transaction->memo)){
+          $dinning++;
+        }
+      }
+      foreach($this->knownAlcohol as $alcoholPattern){
+        if($this->_isMatch($alcoholPattern,$transaction->memo)){
+          $alcohol++;
+        }
+      }
+      foreach($this->knownPhones as $phonePattern){
+        if($this->_isMatch($phonePattern,$transaction->memo)){
+          $phone++;
+        }
+      }
+      foreach($this->knownUtilities as $utilityPattern){
+        if($this->_isMatch($phonePattern,$transaction->memo)){
+          $utility++;
+        }
+      }
+      foreach($this->knownRents as $rentPattern){
+        if($this->_isMatch($rentPattern,$transaction->memo)){
+          $rent++;
+        }
+      }
+      if($this->_isMatch(self::ATT,$transaction->memo)){
+        $internet++;
+      }
+      if($this->_isMatch(self::STATEFARM,$transaction->memo)){
+        $insurance++;
+      }
+      if($this->_isMatch(self::VA,$transaction->memo)){
+        $va++;
+      }
+      if($this->_isMatch(self::STORAGE,$transaction->memo)){
+        $storage++;
+      }
+      if($this->_isMatch(self::CIVIC,$transaction->memo)){
+        $car++;
+      }
     }
+    echo count($this->transactions) . "\n";
+    echo "Alcohol: " . $alcohol . "\n";
+    echo "Dining: " . $dining . "\n";
+    echo "Utility: " . $utility . "\n";
+    echo "Internet: " . $internet . "\n";
+    echo "Phone: " . $phone . "\n";
+    echo "Insurance: " . $insurance . "\n";
+    echo "VA: " . $va . "\n";
+    echo "Rent: " . $rent . "\n";
+    echo "Storage: " . $storage . "\n";
+    echo "Car: " . $car . "\n";
+    echo "____________\n";
+    echo $alcohol + $dining + $utility + $internet + $phone + $insurance + $va + $storage + $rent + $car . "\n";
     return $this;
+  }
+  protected function _isMatch($pattern,$str){
+    if(preg_match($pattern,$str)){
+      return true;
+    }
+    return false;
   }
 
 }
