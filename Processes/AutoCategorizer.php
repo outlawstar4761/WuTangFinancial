@@ -69,7 +69,7 @@ class AutoCategorizer{
     $this->_getTransactions()->_categorize();
   }
   protected function _getTransactions(){
-    $transactions = Record::search(Transaction::TABLE,'category',null);
+    $transactions = Record::search(Transaction::DB,Transaction::TABLE,Transaction::PRIMARYKEY,'category',null);
     print_r($transactions);
     return $this;
   }
