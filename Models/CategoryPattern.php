@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../Libs/Record/Record.php';
 
-class CategoryPattern{
+class CategoryPattern extends Record{
 
   const DB = 'Wu_2';
   const TABLE = 'category_patterns';
