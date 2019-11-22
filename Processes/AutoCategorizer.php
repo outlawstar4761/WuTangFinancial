@@ -5,6 +5,7 @@ require_once __DIR__ . '/../Models/TransactionCategory.php';
 
 class AutoCategorizer{
 
+  public $matches = array();
   protected $_transactions = array();
   protected $_categories = array();
   protected $_patterns = array();
@@ -14,7 +15,6 @@ class AutoCategorizer{
          ->_getCategories()
          ->_getPatterns()
          ->_categorize();
-    print_r($this->_categories);
   }
   protected function _getTransactions(){
     $this->_transactions = Transaction::getUncategorized();
@@ -31,8 +31,15 @@ class AutoCategorizer{
     return $this;
   }
   protected function _categorize(){
-    foreach($this->_transactions as $transaction){
-
+    foreach($this->_categories as $category){
+      $this->matches[$category->category] = 0;
+      foreach($category->patterns as $pattern){
+        foreach($this->_transactions as $transaction){
+          if($this->_isMatch('/' . $pattern->pattern . '/',$transaction->memo)){
+            $this->matches[$category->category]++;
+          }
+        }
+      }
     }
     return $this;
   }
