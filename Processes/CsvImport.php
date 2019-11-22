@@ -4,7 +4,6 @@ require_once __DIR__ . '/../Models/Transaction.php';
 
 class CsvImport{
 
-  const CSV = '.\Wu\Export.csv';
   const NOCSV = 'Source file not found.';
   const DBKEY = 'created_by';
   const DBVAL = '\WuTang\CsvImport';
@@ -18,6 +17,7 @@ class CsvImport{
   public $success;
 
   protected $_csv;
+  protected $_sourceFile;
   protected $_dateRangeStr;
   protected $_accountNumberStr;
   protected $_accountTypeStr;
@@ -25,6 +25,7 @@ class CsvImport{
   protected $_transactions = array();
 
   public function __construct(){
+    $this->_sourceFile = __DIR__ . '/../data/Export.csv';
     try{
       $this->_getCsv()->_getAccountInfo()->_verifyCsv();
     }catch(\Exception $e){
@@ -33,10 +34,10 @@ class CsvImport{
     $this->_insert();
   }
   protected function _getCsv(){
-    if(!file_exists(self::CSV)){
+    if(!file_exists($this->_sourceFile)){
       throw new \Exception(self::NOCSV);
     }
-    $this->_csv = array_map('str_getcsv',file(self::CSV));
+    $this->_csv = array_map('str_getcsv',file($this->_sourceFile));
     return $this;
   }
   protected function _getAccountInfo(){
