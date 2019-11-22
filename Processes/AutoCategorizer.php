@@ -15,7 +15,6 @@ class AutoCategorizer{
          ->_getPatterns()
          ->_categorize();
     print_r($this->_categories);
-    print_r($this->_patterns);
   }
   protected function _getTransactions(){
     $this->_transactions = Transaction::getUncategorized();
@@ -27,7 +26,7 @@ class AutoCategorizer{
   }
   protected function _getPatterns(){
     foreach($this->_categories as $category){
-      $this->_patterns[] = $category->getPatterns();
+      $category->patterns = $category->getPatterns();
     }
     return $this;
   }
