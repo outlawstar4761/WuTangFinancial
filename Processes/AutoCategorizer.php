@@ -5,6 +5,7 @@ require_once __DIR__ . '/../Models/TransactionCategory.php';
 
 class AutoCategorizer{
 
+  public $accuracy;
   public $matches = array();
   protected $_transactions = array();
   protected $_categories = array();
@@ -14,7 +15,8 @@ class AutoCategorizer{
     $this->_getTransactions()
          ->_getCategories()
          ->_getPatterns()
-         ->_categorize();
+         ->_simplePatterns()
+         ->_calculateAccuracy();
   }
   protected function _getTransactions(){
     $this->_transactions = Transaction::getUncategorized();
@@ -30,7 +32,7 @@ class AutoCategorizer{
     }
     return $this;
   }
-  protected function _categorize(){
+  protected function _simplePatterns(){
     foreach($this->_categories as $category){
       $this->matches[$category->category] = 0;
       foreach($category->patterns as $pattern){
@@ -41,6 +43,15 @@ class AutoCategorizer{
         }
       }
     }
+    return $this;
+  }
+  protected function _calculateAccuracy(){
+    $totalRecords = count($this->_transactions);
+    $totalMatches = 0;
+    foreach($this->matches as $key=>$value){
+      $totalMatches += $value;
+    }
+    $this->accuracy = ($totalMatches / $totalRecords) * 100;
     return $this;
   }
   protected function _isMatch($pattern,$str){
