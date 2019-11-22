@@ -39,6 +39,8 @@ class AutoCategorizer{
         foreach($this->_transactions as $transaction){
           if($this->_isMatch('/' . $pattern->pattern . '/',$transaction->memo)){
             $this->matches[$category->category]++;
+            $transaction->category = $pattern->category_id;
+            $transaction->update();
           }
         }
       }
