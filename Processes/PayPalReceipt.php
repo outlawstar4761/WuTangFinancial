@@ -52,7 +52,7 @@ class PayPalReceipt extends Imap{
       ->database(Transaction::DB)
       ->table(Transaction::TABLE)
       ->select(Transaction::PRIMARYKEY)
-      ->where("memo","like","'paypal'")
+      ->where("memo","like","'%paypal%'")
       ->andWhere("amount","=",$amnt)
       ->andWhere("date","=","'" . $date . "'")
       ->get();
