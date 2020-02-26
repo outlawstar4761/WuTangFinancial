@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Models/Transaction.php';
 class PayPalReceipt extends Imap{
 
   const AMNTPATT = '/([0-9]{1,5}\.[0-9]{2})\sUSD/';
-  const MSGRECPATT = '/with\sSMTP\sid\n\s.*;\s(.*)/';
+  const MSGRECPATT = '/Date:\s(.*)/';
   const FROMADD = 'service@paypal.com';
   const SUBJPATT = '/Receipt\sfor\sYour\sPayment\sto/';
 
@@ -40,7 +40,7 @@ class PayPalReceipt extends Imap{
     return $matches[1][0];
   }
   protected function _parseMsgReceived($str){
-    if(!preg_match(self::MSGRECPATT,$str,$matches)){
+    if(!preg_match_all(self::MSGRECPATT,$str,$matches)){
       throw new \Exception('Unable to match received date.');
     }
     $postingDate = date_add(date_create($matches[1]),date_interval_create_from_date_string('2 days'));
