@@ -49,6 +49,7 @@ class PayPalReceipt extends Imap{
   }
   protected function _getTransaction($amnt,$date){
     $obj = null;
+    $amnt = -1 * abs($amnt);
     $results = $GLOBALS['db']
       ->database(Transaction::DB)
       ->table(Transaction::TABLE)
