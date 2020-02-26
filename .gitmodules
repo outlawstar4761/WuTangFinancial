@@ -1,3 +1,6 @@
 [submodule "Libs/Record"]
 	path = Libs/Record
 	url = https://github.com/outlawdesigns-io/Record
+[submodule "Libs/Imap"]
+	path = Libs/Imap
+	url = https://github.com/outlawdesigns-io/Imap
