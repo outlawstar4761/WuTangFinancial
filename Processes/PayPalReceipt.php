@@ -6,7 +6,7 @@ require_once __DIR__ . '/../Models/Transaction.php';
 class PayPalReceipt extends Imap{
 
   const AMNTPATT = '/([0-9]{1,5}\.[0-9]{2})\sUSD/';
-  const MSGRECPATT = '/Received:.*;\s(.*)/';
+  const MSGRECPATT = '/with\sSMTP\sid\n\s.*;\s(.*)/';
   const FROMADD = 'service@paypal.com';
   const SUBJPATT = '/Receipt\sfor\sYour\sPayment\sto/';
 
@@ -25,7 +25,7 @@ class PayPalReceipt extends Imap{
           $receivedDate = $this->_parseMsgReceived($head);
           $dollars = $this->_parseDollarAmnt($html);
           print_r($this->_getTransaction($dollars,$receivedDate));
-          //echo $receivedDate . "\n" . $dollars . "\n";
+          echo $receivedDate . "\n" . $dollars . "\n";
         }catch(\Exception $e){
           echo $e->getMessage() . "\n";
         }
