@@ -17,6 +17,7 @@ class PayPalReceipt extends Imap{
   protected function _parse(){
     $results = $this->search('FROM',self::FROMADD);
     foreach($results as $result){
+      $tryCount = 0;
       if(preg_match(self::SUBJPATT,$result[0]->subject)){
         $head = $this->getMsg($result[0]->msgno,0);
         $body = $this->getMsg($result[0]->msgno,1);
@@ -28,6 +29,9 @@ class PayPalReceipt extends Imap{
           echo $e->getMessage() . "\m";
         }
         while(!$transaction = $this->_getTransaction($dollars,$receivedDate)){
+          if($tryCount++ > 5){
+            throw new \Exception('Unable to Match source transaction.' . $dollars . ' | ' . $receivedDate);
+          }
           $receivedDate = $this->_iterateDate($receivedDate);
         }
         print_r($transaction);
