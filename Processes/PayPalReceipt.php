@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../Libs/Imap.php';
+require_once __DIR__ . '/../Libs/Imap/Imap.php';
 require_once __DIR__ . '/../Models/Transaction.php';
 
 class PayPalReceipt extends Imap{
