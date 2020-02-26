@@ -34,7 +34,7 @@ class DupeFinder{
       ->database(Transaction::DB)
       ->table(Transaction::TABLE)
       ->select(Transaction::PRIMARYKEY)
-      ->where('memo','=',"'" . $memo . "'")
+      ->where('memo','=',"'" . is_null($memo) ? "null":$memo . "'")
       ->andWhere('amount','=',"'" . $amount . "'")
       ->andWhere('date','=',"'" . $date . "'")
       ->orderBy(Transaction::PRIMARYKEY . " limit 1")
