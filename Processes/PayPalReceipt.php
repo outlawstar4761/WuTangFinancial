@@ -29,7 +29,6 @@ class PayPalReceipt extends Imap{
         }catch(\Exception $e){
           echo $e->getMessage() . "\n";
         }
-        exit;
       }
     }
     return $this;
