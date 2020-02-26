@@ -62,7 +62,7 @@ class PayPalReceipt extends Imap{
       throw new \Exception('Unable to find source transaction');
     }
     while($row = mysqli_fetch_assoc($results)){
-      $obj = new Transasction($row[Transaction::PRIMARYKEY]);
+      $obj = new Transaction($row[Transaction::PRIMARYKEY]);
     }
     return $obj;
   }
