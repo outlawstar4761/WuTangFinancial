@@ -6,9 +6,12 @@ require_once __DIR__ . '/../Models/Transaction.php';
 //foreach dupe record, get the first one with matching total,date,amount,memo and delete it.
 class DupeFinder{
 
+  public $pruned;
+
   protected $_dupeRecords = array();
 
   public function __construct(){
+    $this->pruned = 0;
     $this->_getDuplicateRecords()->_pruneDuplicates();
   }
   protected function _getDuplicateRecords(){
@@ -51,12 +54,10 @@ class DupeFinder{
     return $obj;
   }
   protected function _pruneDuplicates(){
-    foreach($this->_dupeRecords as $record){
-      $toDelete = $this->_getTopDupe($record['date'],$record['amount'],$record['memo']);
-      print_r($record);
-      print_r($toDelete);
-      $toDelete->delete();
-      exit;
+    foreach($this->_dupeRecords as $row){
+      $record = $this->_getTopDupe($row['date'],$row['amount'],$row['memo']);
+      $record->delete();
+      $this->pruned++;
     }
     return $this;
   }
