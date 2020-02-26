@@ -30,15 +30,18 @@ class DupeFinder{
   }
   protected function _getTopDupe($date,$amount,$memo){
     $obj = null;
-    $results = $GLOBALS['db']
+    $GLOBALS['db']
       ->database(Transaction::DB)
       ->table(Transaction::TABLE)
       ->select(Transaction::PRIMARYKEY)
-      ->where('memo','=',"'" . is_null($memo) ? "null":$memo . "'")
-      ->andWhere('amount','=',"'" . $amount . "'")
-      ->andWhere('date','=',"'" . $date . "'")
-      ->orderBy(Transaction::PRIMARYKEY . " limit 1")
-      ->get();
+      ->where('amount','=',"'" . $amount . "'")
+      ->andWhere('date','=',"'" . $date . "'");
+    if(is_null($memo)){
+      $GLOBALS['db']->andWhere("memo","is","null");
+    }else{
+      $GLOBALS['db']->andWhere("memo","=","'" . $memo . "'");
+    }
+    $results = $GLOBALS['db']->orderBy(Transaction::PRIMARYKEY . " limit 1")->get();
     if(!mysqli_num_rows($results)){
       throw new \Exception('Cannot find duplicate with: ' . $date . ' ' . $amount . ' ' . $memo);
     }
