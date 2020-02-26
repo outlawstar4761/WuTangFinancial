@@ -19,6 +19,7 @@ class DupeFinder{
       ->groupBy('date,amount,memo')
       ->having('total','>',1)
       ->orderBy('date')
+      ->get();
     if(!mysqli_num_rows($results)){
       throw new \Exception('No Duplicate Records.');
     }
