@@ -37,8 +37,7 @@ class DupeFinder{
       ->where('memo','=',"'" . $memo . "'")
       ->andWhere('amount','=',"'" . $amount . "'")
       ->andWhere('date','=',"'" . $date . "'")
-      ->orderBy(Transaction::PRIMARYKEY)
-      ->limit(1)
+      ->orderBy(Transaction::PRIMARYKEY . " limit 1")
       ->get();
     if(!mysqli_num_rows($results)){
       throw new \Exception('Cannot find duplicate with: ' . $date . ' ' . $amount . ' ' . $memo);
