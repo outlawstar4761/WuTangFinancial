@@ -55,6 +55,8 @@ class DupeFinder{
       $toDelete = $this->_getTopDupe($record['date'],$record['amount'],$record['memo']);
       print_r($record);
       print_r($toDelete);
+      $toDelete->delete();
+      exit;
     }
     return $this;
   }
