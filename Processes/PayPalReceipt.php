@@ -27,13 +27,10 @@ class PayPalReceipt extends Imap{
         }catch(\Exception $e){
           echo $e->getMessage() . "\m";
         }
-        try{
-          $transaction = $this->_getTransaction($dollars,$receivedDate);
-          echo $receivedDate . "\n" . $dollars . "\n";
-        }catch(\Exception $e){
-          echo $receivedDate . " | " . $dollars . "\n";
-          echo $e->getMessage() . "\n";
+        while(!$transaction = $this->_getTransaction($dollars,$receivedDate)){
+          $receivedDate = $this->_iterateDate($receivedDate);
         }
+        print_r($transaction);
       }
     }
     return $this;
@@ -48,8 +45,11 @@ class PayPalReceipt extends Imap{
     if(!preg_match_all(self::MSGRECPATT,$str,$matches)){
       throw new \Exception('Unable to match received date.');
     }
-    $postingDate = date_add(date_create($matches[1][0]),date_interval_create_from_date_string('2 days'));
-    return date_format($postingDate,"Y-m-d"); //H:i:s
+    return date('Y-m-d',strtotime($matches[1][0]));
+  }
+  protected function _iterateDate($dateStr,$numDays = 1){
+    $date = date_add(date_create($dateStr),date_interval_create_from_date_string($numDays . ' days'));
+    return date_format($date,"Y-m-d"); //H:i:s
   }
   protected function _getTransaction($amnt,$date){
     $obj = null;
@@ -63,7 +63,7 @@ class PayPalReceipt extends Imap{
       ->andWhere("date","=","'" . $date . "'")
       ->get();
     if(!mysqli_num_rows($results)){
-      throw new \Exception('Unable to find source transaction');
+      return false;
     }
     while($row = mysqli_fetch_assoc($results)){
       $obj = new Transaction($row[Transaction::PRIMARYKEY]);
