@@ -24,9 +24,14 @@ class PayPalReceipt extends Imap{
         try{
           $receivedDate = $this->_parseMsgReceived($head);
           $dollars = $this->_parseDollarAmnt($html);
-          print_r($this->_getTransaction($dollars,$receivedDate));
+        }catch(\Exception $e){
+          echo $e->getMessage() . "\m";
+        }
+        try{
+          $transaction = $this->_getTransaction($dollars,$receivedDate);
           echo $receivedDate . "\n" . $dollars . "\n";
         }catch(\Exception $e){
+          echo $receivedDate . " | " . $dollars . "\n";
           echo $e->getMessage() . "\n";
         }
       }
