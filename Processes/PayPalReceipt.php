@@ -44,7 +44,8 @@ class PayPalReceipt extends Imap{
     if(!preg_match(self::MSGRECPATT,$str,$matches)){
       throw new \Exception('Unable to match received date.');
     }
-    return date('Y-m-d H:i:s',strtotime($matches[1]));
+    $postingDate = date_add(date_create($matches[1]),date_interval_create_from_string('2 days'));
+    return date_format($postingDate,"Y-m-d H:i:s");
   }
   protected function _getTransaction($amnt,$date){
     $obj = null;
