@@ -1,5 +1,14 @@
 <?php
 
+//todo create out of range exception if email date is > max(date) form DB
+//todo save email as a PDF somewhere.
+//todo create Receipt model
+/*
+id
+transactionId
+file_path
+*/
+
 require_once __DIR__ . '/../Libs/Imap/Imap.php';
 require_once __DIR__ . '/../Models/Transaction.php';
 
@@ -26,11 +35,11 @@ class PayPalReceipt extends Imap{
           $receivedDate = $this->_parseMsgReceived($head);
           $dollars = $this->_parseDollarAmnt($html);
         }catch(\Exception $e){
-          echo $e->getMessage() . "\m";
+          throw new \Exception($e->getMessage());
         }
         while(!$transaction = $this->_getTransaction($dollars,$receivedDate)){
           if($tryCount++ > 5){
-            throw new \Exception('Unable to Match source transaction.' . $dollars . ' | ' . $receivedDate);
+            throw new \Exception('Unable to Match source transaction. ' . $dollars . ' | ' . $receivedDate);
           }
           $receivedDate = $this->_iterateDate($receivedDate);
         }
@@ -77,7 +86,7 @@ class PayPalReceipt extends Imap{
 }
 
 $host = 'imap.gmail.com';
-$user = 'outlawstar4761@gmail.com';
-$pass = 'B00TSw34t';
+$user = 'test@gmail.com';
+$pass = 'test';
 $port = 993;
 $proc = new PayPalReceipt($host,$user,$pass,$port);
