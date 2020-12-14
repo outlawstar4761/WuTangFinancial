@@ -35,4 +35,23 @@ class Transaction extends Record{
     }
     return $data;
   }
+  public static function matchPayPalTransaction($amnt,$date){
+    $obj = null;
+    $amnt = -1 * abs($amnt);
+    $results = $GLOBALS['db']
+      ->database(self::DB)
+      ->table(self::TABLE)
+      ->select(self::PRIMARYKEY)
+      ->where("memo","like","'%paypal%'")
+      ->andWhere("amount","=",$amnt)
+      ->andWhere("date","=","'" . $date . "'")
+      ->get();
+    if(!mysqli_num_rows($results)){
+      return false;
+    }
+    while($row = mysqli_fetch_assoc($results)){
+      $obj = new self($row[self::PRIMARYKEY]);
+    }
+    return $obj;
+  }
 }
