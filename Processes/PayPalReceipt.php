@@ -84,9 +84,3 @@ class PayPalReceipt extends Imap{
     return $obj;
   }
 }
-
-$host = 'imap.gmail.com';
-$user = 'outlawstar4761@gmail.com';
-$pass = 'B00TSw34t';
-$port = 993;
-$proc = new PayPalReceipt($host,$user,$pass,$port);
