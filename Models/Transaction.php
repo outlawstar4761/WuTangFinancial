@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Libs/Record/Record.php';
+require_once __DIR__ . '/TransactionCategory.php';
 
 class Transaction extends Record{
   const DB = 'Wu_2';
@@ -54,4 +55,68 @@ class Transaction extends Record{
     }
     return $obj;
   }
+  public static function getYearlyUncategorizedTotals(){
+    $data = array();
+    $results = $GLOBALS['db']
+      ->database(self::DB)
+      ->table(self::TABLE)
+      ->select('count(*) as total_transactions, sum(amount) as total_spent, 'null' as category, year(date) as tyear')
+      ->where('category','is','null')
+      ->groupBy('category.category, year(transaction.date)')
+      ->orderBy('category,tyear')
+      ->get();
+    if(!mysqli_num_rows($results)){
+      return false;
+    }
+    while($row = mysqli_fetch_assoc($results)){
+      $data[] = $row;
+    }
+    return $data;
+  }
+  public static function getExpensesByCategory(){
+    $data = array();
+    $results = $GLOBALS['db']
+      ->database(self::DB)
+      ->table(self::TABLE . ' transaction')
+      ->select('count(transaction.id) as total_transactions,sum(transaction.amount) as total_spent,category.category,year(transaction.date) as tyear')
+      ->join(TransactionCategory::TABLE . ' category','transaction.category','=','category.id')
+      ->where('transaction.amount','<',0)
+      ->get();
+    if(!mysqli_num_rows($results)){
+      throw new \Exception('No expenses available');
+    }
+    while($row = mysqli_fetch_assoc($results)){
+      $data[] = $row;
+    }
+    return $data;
+  }
 }
+
+/*
+SELECT count(transaction.id) as total_transactions,sum(transaction.amount) as total_spent,category.category,year(transaction.date) as tyear
+FROM Wu_2.transactions transaction
+JOIN Wu_2.transaction_categories category
+ON transaction.category = category.id
+WHERE transaction.amount < 0
+GROUP BY category.category, year(transaction.date)
+ORDER BY category,tyear;
+*/
+
+/*
+public static function counts($key,$date = null){
+    $data = array();
+    $GLOBALS['db']
+        ->database(self::DB)
+        ->table(Song::TABLE . " music")
+        ->select("count(played.UID) as count,music." . $key)
+        ->join(self::TABLE . " played","played.songId","=","music.UID");
+    if(!is_null($date)){
+      $GLOBALS['db']->where("CAST(played.playDate as DATE)","=","'" . $date . "'");
+    }
+    $results = $GLOBALS['db']->groupBy("music." . $key)->orderBy("count desc")->get();
+    while($row = mysqli_fetch_assoc($results)){
+      $data[] = $row;
+    }
+    return $data;
+  }
+*/
