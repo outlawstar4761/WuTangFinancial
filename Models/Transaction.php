@@ -60,13 +60,34 @@ class Transaction extends Record{
     $results = $GLOBALS['db']
       ->database(self::DB)
       ->table(self::TABLE)
-      ->select('count(*) as total_transactions, sum(amount) as total_spent, 'null' as category, year(date) as tyear')
+      ->select("count(*) as total_transactions, sum(amount) as total_spent, 'null' as category, year(date) as tyear")
       ->where('category','is','null')
-      ->groupBy('category.category, year(transaction.date)')
+      ->groupBy('category, year(date)')
       ->orderBy('category,tyear')
       ->get();
     if(!mysqli_num_rows($results)){
       return false;
+    }
+    while($row = mysqli_fetch_assoc($results)){
+      $data[] = $row;
+    }
+    return $data;
+  }
+  public static function categoryBreakDown($expense = true){
+    $data = array();
+    $GLOBALS['db']
+      ->database(self::DB)
+      ->table(self::TABLE . ' transaction')
+      ->select('count(transaction.id) as total_transactions,sum(transaction.amount) as total_spent,category.category,year(transaction.date) as tyear')
+      ->join(TransactionCategory::TABLE . ' category','transaction.category','=','category.id');
+    if($expense){
+      $GLOBALS['db']->where('transaction.amount','<',0);
+    }else{
+      $GLOBALS['db']->where('transaction.amount','>',0);
+    }
+    $results = $GLOBALS['db']->groupBy('category.category, year(transaction.date)')->orderBy('category,tyear')->get();
+    if(!mysqli_num_rows($results)){
+      throw new \Exception('No expenses available');
     }
     while($row = mysqli_fetch_assoc($results)){
       $data[] = $row;
@@ -80,7 +101,9 @@ class Transaction extends Record{
       ->table(self::TABLE . ' transaction')
       ->select('count(transaction.id) as total_transactions,sum(transaction.amount) as total_spent,category.category,year(transaction.date) as tyear')
       ->join(TransactionCategory::TABLE . ' category','transaction.category','=','category.id')
-      ->where('transaction.amount','<',0)
+      // ->where('transaction.amount','<',0)
+      ->groupBy('category.category, year(transaction.date)')
+      ->orderBy('category,tyear')
       ->get();
     if(!mysqli_num_rows($results)){
       throw new \Exception('No expenses available');
@@ -90,33 +113,21 @@ class Transaction extends Record{
     }
     return $data;
   }
-}
-
-/*
-SELECT count(transaction.id) as total_transactions,sum(transaction.amount) as total_spent,category.category,year(transaction.date) as tyear
-FROM Wu_2.transactions transaction
-JOIN Wu_2.transaction_categories category
-ON transaction.category = category.id
-WHERE transaction.amount < 0
-GROUP BY category.category, year(transaction.date)
-ORDER BY category,tyear;
-*/
-
-/*
-public static function counts($key,$date = null){
+  public static function getYearlyTotals($expense = true){
     $data = array();
-    $GLOBALS['db']
-        ->database(self::DB)
-        ->table(Song::TABLE . " music")
-        ->select("count(played.UID) as count,music." . $key)
-        ->join(self::TABLE . " played","played.songId","=","music.UID");
-    if(!is_null($date)){
-      $GLOBALS['db']->where("CAST(played.playDate as DATE)","=","'" . $date . "'");
+    $GLOBALS['db']->database(self::DB)->table(self::TABLE);
+    if($expense){
+      $GLOBALS['db']->select("(sum(amount) * -1) as total,year(date) as year")->where('amount','<',0);
+    }else{
+      $GLOBALS['db']->select("sum(amount) as total,year(date) as year")->where('amount','>',0);
     }
-    $results = $GLOBALS['db']->groupBy("music." . $key)->orderBy("count desc")->get();
+    $results = $GLOBALS['db']->groupBy('year')->get();
+    if(!mysqli_num_rows($results)){
+      throw new \Exception('Unable to get data');
+    }
     while($row = mysqli_fetch_assoc($results)){
-      $data[] = $row;
+      $data[$row['year']] = $row['total'];
     }
     return $data;
   }
-*/
+}
