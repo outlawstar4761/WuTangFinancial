@@ -25,4 +25,20 @@ class TransactionCategory extends Record{
   public function getPatterns(){
     return CategoryPattern::getCategory($this->id);
   }
+  public static function getByLabel($label){
+    $data = array();
+    $results = $GLOBALS['db']
+      ->database(self::DB)
+      ->table(self::TABLE)
+      ->select(self::PRIMARYKEY)
+      ->where('category','like',"'%" . $label . "%'")
+      ->get();
+    if(!mysqli_num_rows($results)){
+      return false;
+    }
+    while($row = mysqli_fetch_assoc($results)){
+      $data[] = new self($row[self::PRIMARYKEY]);
+    }
+    return $data;
+  }
 }
