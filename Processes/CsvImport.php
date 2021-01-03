@@ -24,8 +24,9 @@ class CsvImport{
   protected $_verified;
   protected $_transactions = array();
 
-  public function __construct(){
-    $this->_sourceFile = __DIR__ . '/../data/Export.csv';
+  public function __construct($sourceFile){
+    // $this->_sourceFile = __DIR__ . '/../data/Export.csv';
+    $this->_sourceFile = $sourceFile;
     try{
       $this->_getCsv()->_getAccountInfo()->_verifyCsv();
     }catch(\Exception $e){
