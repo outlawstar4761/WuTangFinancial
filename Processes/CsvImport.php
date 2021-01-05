@@ -3,7 +3,8 @@
 require_once __DIR__ . '/../Models/Transaction.php';
 
 class CsvImport{
-
+  
+  const DEBUG = true;
   const NOCSV = 'Source file not found.';
   const DBKEY = 'created_by';
   const DBVAL = '\WuTang\CsvImport';
@@ -15,6 +16,7 @@ class CsvImport{
 
 
   public $success;
+  public $exceptions = array();
 
   protected $_csv;
   protected $_sourceFile;
@@ -96,7 +98,11 @@ class CsvImport{
   }
   protected function _insert(){
     foreach($this->_transactions as $transaction){
-      $transaction->create();
+      if(!Transaction::recordExists($transaction->date,$transaction->amount,$transaction->memo)){
+        self::DEBUG ? print_r($transaction):$transaction->create();
+      }else{
+        $this->exceptions[] = $transaction;
+      }
     }
     return $this;
   }

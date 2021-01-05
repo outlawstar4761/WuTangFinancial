@@ -23,6 +23,24 @@ class Transaction extends Record{
   public function __construct($id = null){
     parent::__construct(self::DB,self::TABLE,self::PRIMARYKEY,$id);
   }
+  public static function recordExists($date,$amount,$memo){
+    $GLOBALS['db']
+      ->database(self::DB)
+      ->table(self::TABLE)
+      ->select(self::PRIMARYKEY)
+      ->where('amount','=',"'" . $amount . "'")
+      ->andWhere('date','=',"'" . $date . "'");
+    if(is_null($memo)){
+      $GLOBALS['db']->andWhere("memo","is","null");
+    }else{
+      $GLOBALS['db']->andWhere("memo","=","'" . $memo . "'");
+    }
+    $results = $GLOBALS['db']->orderBy(Transaction::PRIMARYKEY . " limit 1")->get();
+    if(!mysqli_num_rows($results)){
+      return false;
+    }
+    return true;
+  }
   public static function getUncategorized(){
     $data = array();
     $results = $GLOBALS['db']
