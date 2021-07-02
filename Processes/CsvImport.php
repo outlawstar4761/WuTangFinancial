@@ -72,7 +72,7 @@ class CsvImport{
         $key = $this->_morphField($this->_csv[4][$j]);
         if($j == 1){
           if(empty($this->_csv[$i][$j]) || is_null($this->_csv[$i][$j])){
-            continue;
+            break 2;
           }
           $transaction->$key = date('Y-m-d H:i:s',strtotime($this->_csv[$i][$j]));
         }elseif($j == 3){
