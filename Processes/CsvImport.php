@@ -2,8 +2,12 @@
 
 require_once __DIR__ . '/../Models/Transaction.php';
 
+/*
+records with no date are pending transactions, filter them out
+*/
+
 class CsvImport{
-  
+
   const DEBUG = true;
   const NOCSV = 'Source file not found.';
   const DBKEY = 'created_by';
@@ -67,6 +71,9 @@ class CsvImport{
       for($j = 0; $j <= 6; $j++){
         $key = $this->_morphField($this->_csv[4][$j]);
         if($j == 1){
+          if(empty($this->_csv[$i][$j]) || is_null($this->_csv[$i][$j])){
+            continue;
+          }
           $transaction->$key = date('Y-m-d H:i:s',strtotime($this->_csv[$i][$j]));
         }elseif($j == 3){
           $transaction->$key = preg_replace('/\'/','',$this->_csv[$i][$j]);
