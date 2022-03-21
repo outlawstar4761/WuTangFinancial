@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../Models/Transaction.php';
 
-class CheckingAccountImport{
+class CheckingAccountImport extends CsvImport{
 
   const DEBUG = true;
 

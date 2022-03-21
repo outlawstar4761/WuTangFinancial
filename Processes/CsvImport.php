@@ -10,6 +10,7 @@ abstract class CsvImport{
   const VERIFYACTMSG = "This csv appears to be ill-formated\nDue to reason: Missing or misplaced account type.\n**Please Check your code before you wreck your code.**\n";
   const VERIFYACNMSG = "This csv appears to be ill-formated\nDue to reason: Missing or misplaced account Number.\n**Please Check your code before you wreck your code.**\n";
   const VERIFYDATEMSG = 'Importing Csv with missing or misplaced date range str';
+  const HEADERPATT = '/:\s(.*)/';
 
   protected $_sourceFile;
   protected $_csv;
@@ -17,6 +18,9 @@ abstract class CsvImport{
   protected $_accountNumberStr;
   protected $_dateRangeStr;
   protected $_transactions = array();
+  protected $_accountId;
+
+  public $exceptions = array();
 
   protected function _getCsv(){
     if(!file_exists($this->_sourceFile)){
@@ -46,5 +50,9 @@ abstract class CsvImport{
       }
     }
     return $this;
+  }
+  protected function _parseHeaderValue($headerStr){
+    preg_match(self::HEADERPATT,$headerStr,$matches);
+    return $matches[1];
   }
 }
