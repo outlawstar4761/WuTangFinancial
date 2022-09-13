@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Models/Transaction.php';
+require_once __DIR__ . '/CsvImport.php';
 
 class CheckingAccountImport extends CsvImport{
 
@@ -9,6 +10,13 @@ class CheckingAccountImport extends CsvImport{
   const DBKEY = 'created_by';
   const SPACEPATT = '/\s/';
   const SPACEREPL = '_';
+
+  protected $_sourceFile;
+  protected $_dateRangeStr;
+  protected $_accountNumberStr;
+  protected $_accountTypeStr;
+  protected $_csv;
+  protected $_transactions = array();
 
   public function __construct($sourceFile){
     $this->_sourceFile = $sourceFile;
