@@ -55,8 +55,7 @@ class CheckingAccountImport2 extends CsvImport{
       $transaction->transaction_type = $descriptionArr[1];
       $transaction->date = date('Y-m-d H:i:s',strtotime($row[self::CSVKEYS['DATE']]));
       $transaction->description = $descriptionArr[0];
-      //Remove description and escape apostrophes
-      $transaction->memo = trim(preg_replace('/' . $descriptionArr[0] . '/','',preg_replace('/\'/','',$row[self::CSVKEYS['MEMO']])));
+      $transaction->memo = trim(preg_replace('/\'/','',$row[self::CSVKEYS['MEMO']]));
       $transaction->amount = $amount;
       $transaction->balance = $row[self::CSVKEYS['BALANCE']];
       $transaction->check_number = $row[self::CSVKEYS['CHECK']];
