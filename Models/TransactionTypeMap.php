@@ -14,6 +14,7 @@ class TransactionTypeMap{
     "Bill payment"=>array("Bill payment Card purchase","Other"),
     "Check"=>array("Draft Withdrawal","Check"),
     "Home banking"=>array("Withdrawal Transfer to Share 0000","Transfer"),
-    "Premium Checking"=>array("Premium Checking Monthly Fee","Fee")
+    "Premium Checking"=>array("Premium Checking Monthly Fee","Fee"),
+    "Deposit ATM"=>array("Deposit","Other")
   );
 }
