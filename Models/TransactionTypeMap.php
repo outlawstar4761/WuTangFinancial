@@ -16,6 +16,7 @@ class TransactionTypeMap{
     "Home banking"=>array("Withdrawal Transfer to Share 0000","Transfer"),
     "Premium Checking"=>array("Premium Checking Monthly Fee","Fee"),
     "Deposit ATM"=>array("Deposit","Other"),
+    "Cash Deposit"=>array("Cash Deposit",null),
     "Deposit Premium"=>array("Deposit","Dividend")
   );
 }
